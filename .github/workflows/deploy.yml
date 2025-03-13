@@ -1,0 +1,28 @@
+name: Desplegar em GCP
+
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  job_id:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v4
+
+        - id : auth
+          name: 'Authenticate to Google Cloud'
+          uses: 'google-github-actions/auth@v2'
+          with:
+            credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+        - id : deploy
+          name: 'Desplegar en GCP'
+          uses: 'google-github-actions/deploy-cloud-functions@v3'
+          timeout-minutes: 10
+          with:
+            name : 'api-test-pokemon'
+            runtime : 'python311'
+            entry_point : 'hello_http'
+         
